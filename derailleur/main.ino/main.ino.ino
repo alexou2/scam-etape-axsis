@@ -3,7 +3,7 @@
 #include <Servo.h>
 
 int position = 0;
-int arr[13] = {-1,15,30, 45,60, 75, 90, 105, 120, 135, 150, 165, 180};
+int arr[13] = {0,15,30, 45,60, 75, 90, 105, 120, 135, 150, 165, 180};
 Servo servo_9;
 int overshift = 0;
 bool in_motion = false;
@@ -14,10 +14,12 @@ float timer = 0;
 
 void setup()
 {
+  Serial.begin(9600);
+  Serial.println("Start");
   servo_9.attach(9, 500, 2500);
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(10, INPUT_PULLUP);
-  Serial.begin(9600);
+  
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(11, INPUT_PULLUP);
   
