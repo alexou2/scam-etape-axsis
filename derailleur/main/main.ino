@@ -26,17 +26,24 @@ void setup()
 void loop()
 {
   String command = Serial.readStringUntil('\n');
-  
-// pulling the shift cable
+
+  // pulling the shift cable
   if (command == "up" && idx < 12) {
     actuate_servo(1, 10);
   }
-// releasing the shift cable  
+  // releasing the shift cable
   if (command == "down" && idx > 0) {
     actuate_servo(-1, -10);
   }
-  // checking if the servo is in the process of shifting
-  if (timer > 0) {
+
+// for adjusting the position of the servo for each gear
+  if (command == "+")
+    arr[idx] ++;
+  if (command == "-")
+    arr[idx] --;
+
+// checking if the servo is in the process of shifting
+if (timer > 0) {
     in_motion = true;
     timer --;
   }
@@ -47,7 +54,7 @@ void loop()
     timer = 0;
     digitalWrite(LED_BUILTIN, LOW);
   }
-  
+
   // updates the position the servo is supposed to be at
   // changes the servo position
   int position = arr[idx];
