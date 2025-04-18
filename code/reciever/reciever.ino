@@ -15,7 +15,7 @@ enum Signals {
   TRIM_DOWN,
 };
 //int indexing[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-int indexing[8] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
+int indexing[10] = {0, 22, 30, 40, 45, 55, 58, 67, 77, 90};
 int current_gear = 0;
 int temp_gear_offset = 0; // used when setting a gear in the setup process
 Servo servo_9;
@@ -54,35 +54,35 @@ void loop() {
       case GEAR_UP:
       if(current_gear<9){
         current_gear += 1;
-        overshift  = 3;
+        overshift  = 10;
       }
 //        move_servo(indexing[current_gear]);
         break;
       case GEAR_DOWN:
       if(current_gear>0){
         current_gear -= 1;
-        overshift = -3;
+        overshift = -10;
       }
 //        move_servo(indexing[current_gear]);
         break;
       case SET_GEAR:
         // save the gear position ot storage
-        if (current_gear < 9 && indexing[current_gear + 1] < indexing[current_gear]) {
-          indexing[current_gear + 1] = indexing[current_gear];
-          Serial.println("set");
-        } else {
-          Serial.println(current_gear);
-          Serial.println(indexing[current_gear + 1]);
-        }
+//        if (current_gear < 9 && indexing[current_gear + 1] < indexing[current_gear]) {
+//          indexing[current_gear + 1] = indexing[current_gear];
+//          Serial.println("set");
+//        } else {
+//          Serial.println(current_gear);
+//          Serial.println(indexing[current_gear + 1]);
+//        }
         temp_gear_offset = 0;
         break;
       case TRIM_UP:
-        indexing[current_gear] += 4;
+        indexing[current_gear] += 1;
         Serial.print("trim:");
         Serial.println(indexing[current_gear]);
         break;
       case TRIM_DOWN:
-        indexing[current_gear] -= 4;
+        indexing[current_gear] -= 1;
         Serial.print("trim:");
         Serial.println(indexing[current_gear]);
         break;
@@ -93,11 +93,12 @@ void loop() {
    
      print_details();
      
-
   }
-   delay(100);
+  
+  servo_9.write(indexing[current_gear] + overshift);
+   delay(300);
 //  sleep_low_power(6);
- servo_9.write(indexing[current_gear] + overshift);
+ 
 
 }
 

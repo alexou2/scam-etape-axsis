@@ -38,7 +38,7 @@ void setup() {
   pinMode(7, INPUT_PULLUP);
   pinMode(8, INPUT_PULLUP);
 
-  //  pinMode(11, INPUT_PULLUP);
+    pinMode(2, INPUT_PULLUP);
 }
 
 void loop() {
@@ -46,20 +46,21 @@ void loop() {
 
   int buttonState = digitalRead(7);
   int button2State = digitalRead(8);
+  int debug_button_state = digitalRead(2);
 
   Signals command = NONE;
   //  if (buttonState == LOW && button2State == LOW) {
   //    String prompt = Serial.readStringUntil('\n');
 
   //    if (prompt == "setup") {
-  if (buttonState == LOW && button2State == LOW && !in_debug_mode ) {
+  if (debug_button_state == LOW && !in_debug_mode ) {
     Serial.println("setup");
     in_debug_mode = true;
     delay(1000);
     return;
   }
   //    if ( prompt == "set") {
-  if (buttonState == LOW && button2State == LOW && in_debug_mode ) {
+  if (debug_button_state == LOW && in_debug_mode ) {
     command = SET_GEAR;
     Serial.println("set");
     in_debug_mode = false;
