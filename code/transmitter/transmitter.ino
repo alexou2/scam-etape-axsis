@@ -5,6 +5,8 @@
 RF24 radio(10, 9); // CE, CSN
 
 const byte address[6] = "00001";
+bool button_pressed = false;
+int button_pressed_timer = 0;
 
 enum Signals {
   NONE,
@@ -35,7 +37,6 @@ void setup() {
 
   pinMode(7, INPUT_PULLUP);
   pinMode(8, INPUT_PULLUP);
-  pinMode(2, INPUT_PULLUP);
 
   //  pinMode(11, INPUT_PULLUP);
 }
@@ -45,21 +46,20 @@ void loop() {
 
   int buttonState = digitalRead(7);
   int button2State = digitalRead(8);
-  int debug_button_state = digitalRead(2);
 
   Signals command = NONE;
   //  if (buttonState == LOW && button2State == LOW) {
   //    String prompt = Serial.readStringUntil('\n');
 
   //    if (prompt == "setup") {
-  if (debug_button_state == LOW && !in_debug_mode ) {
+  if (buttonState == LOW && button2State == LOW && !in_debug_mode ) {
     Serial.println("setup");
     in_debug_mode = true;
     delay(1000);
     return;
   }
   //    if ( prompt == "set") {
-  if (debug_button_state == LOW && in_debug_mode ) {
+  if (buttonState == LOW && button2State == LOW && in_debug_mode ) {
     command = SET_GEAR;
     Serial.println("set");
     in_debug_mode = false;
@@ -72,24 +72,41 @@ void loop() {
 
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (buttonState == LOW) {
+  if (buttonState == LOW && !button_pressed) {
     if (in_debug_mode) {
       command = TRIM_UP;
     } else {
+
       command = GEAR_UP;
     }
-
+button_pressed = true;
     // turn LED on:
   }
-  if (button2State == LOW) {
+  if (button2State == LOW && !button_pressed) {
     if (in_debug_mode) {
       command = TRIM_DOWN;
     } else {
+
       command = GEAR_DOWN;
     }
+    button_pressed = true;
     // turn LED on:
   }
+
+  if(buttonState == HIGH && button2State == HIGH){
+    button_pressed = false;
+    button_pressed_timer = 0;
+  }else{
+    button_pressed_timer +=1;
+  }
+
+
+if(button_pressed_timer>35){
+  button_pressed = false;
+    button_pressed_timer = 15;
+}
   if (command != NONE) {
+
     // enabling and disabling the radio to save power
     //    radio.powerUp();
     int status = radio.write(&command, sizeof(command));
@@ -100,5 +117,5 @@ void loop() {
 
 
   //  Serial.println(command);
-  delay(120);
+  delay(10);
 }
