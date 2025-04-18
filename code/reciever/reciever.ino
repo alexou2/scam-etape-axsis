@@ -15,7 +15,7 @@ enum Signals {
   TRIM_DOWN,
 };
 //int indexing[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-int indexing[8] = {0, 13, 26, 39, 52, 65, 78, 90};
+int indexing[8] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
 int current_gear = 0;
 int temp_gear_offset = 0; // used when setting a gear in the setup process
 Servo servo_9;
@@ -52,7 +52,7 @@ void loop() {
     
     switch (command) {
       case GEAR_UP:
-      if(current_gear<7){
+      if(current_gear<9){
         current_gear += 1;
         overshift  = 3;
       }
@@ -67,7 +67,7 @@ void loop() {
         break;
       case SET_GEAR:
         // save the gear position ot storage
-        if (current_gear < 7 && indexing[current_gear + 1] < indexing[current_gear]) {
+        if (current_gear < 9 && indexing[current_gear + 1] < indexing[current_gear]) {
           indexing[current_gear + 1] = indexing[current_gear];
           Serial.println("set");
         } else {
@@ -77,12 +77,12 @@ void loop() {
         temp_gear_offset = 0;
         break;
       case TRIM_UP:
-        indexing[current_gear] += 2;
+        indexing[current_gear] += 4;
         Serial.print("trim:");
         Serial.println(indexing[current_gear]);
         break;
       case TRIM_DOWN:
-        indexing[current_gear] -= 2;
+        indexing[current_gear] -= 4;
         Serial.print("trim:");
         Serial.println(indexing[current_gear]);
         break;
