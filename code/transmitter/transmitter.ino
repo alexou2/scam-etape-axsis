@@ -35,41 +35,34 @@ void setup() {
 
   radio.stopListening();
 
-  pinMode(7, INPUT_PULLUP);
-  pinMode(8, INPUT_PULLUP);
-
-    pinMode(2, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP); // shift button 1
+  pinMode(8, INPUT_PULLUP);// shift button 2
+  pinMode(LED_BUILTIN, OUTPUT); // led to indicate if in debug mode
+  pinMode(2, INPUT_PULLUP); // debug mode toggle button
 }
 
 void loop() {
-  //  Serial.println("ss");
-
   int buttonState = digitalRead(7);
   int button2State = digitalRead(8);
   int debug_button_state = digitalRead(2);
 
   Signals command = NONE;
-  //  if (buttonState == LOW && button2State == LOW) {
   //    String prompt = Serial.readStringUntil('\n');
-
-  //    if (prompt == "setup") {
-  if (debug_button_state == LOW && !in_debug_mode ) {
-    Serial.println("setup");
-    in_debug_mode = true;
-    delay(1000);
-    return;
+  if (debug_button_state == LOW){
+    //    String prompt = Serial.readStringUntil('\n');
+    if( !in_debug_mode ) {
+      Serial.println("setup");
+      digitalWrite(LED_BUILTIN, HIGH);
+      in_debug_mode = true;
+      
+    } else {
+      command = SET_GEAR;
+      Serial.println("set");
+      digitalWrite(LED_BUILTIN, LOW);
+      in_debug_mode = false;
+    }
+    delay(750);
   }
-  //    if ( prompt == "set") {
-  if (debug_button_state == LOW && in_debug_mode ) {
-    command = SET_GEAR;
-    Serial.println("set");
-    in_debug_mode = false;
-    delay(1000);
-
-    buttonState = HIGH;
-    button2State = HIGH;
-  }
-  //  }
 
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
@@ -80,7 +73,7 @@ void loop() {
 
       command = GEAR_UP;
     }
-button_pressed = true;
+    button_pressed = true;
     // turn LED on:
   }
   if (button2State == LOW && !button_pressed) {
